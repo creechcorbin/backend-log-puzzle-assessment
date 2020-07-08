@@ -26,8 +26,15 @@ def read_urls(filename):
     extracting the hostname from the filename itself, sorting
     alphabetically in increasing order, and screening out duplicates.
     """
-    # +++your code here+++
-    pass
+    with open(filename, 'r') as f:
+        logs = f.read()
+        pattern = r'\/\w+\/\w+\/google-python-class\/\w+\/puzzle\/\w+\W\w+\W\w+\S*'
+        matches = list(dict.fromkeys(re.findall(pattern, logs)))
+        matches.sort(key=lambda x: x[-7:-4])
+        print(matches)
+        img_urls = ['http://code.google.com{0}'.format(match_path) for match_path in matches]
+    return img_urls
+    
 
 
 def download_images(img_urls, dest_dir):
@@ -38,8 +45,20 @@ def download_images(img_urls, dest_dir):
     to show each local image file.
     Creates the directory if necessary.
     """
-    # +++your code here+++
-    pass
+    print('downloading...')
+    for i, image in enumerate(img_urls):
+        filepath = os.path.join('./{}'.format(dest_dir), 'img{}.jpg'.format(i))
+        if not os.path.exists('./{}'.format(dest_dir)):
+            os.makedirs('./{}'.format(dest_dir))
+            f = open(filepath, "a")
+        print(image)
+        urllib.request.urlretrieve(image, './{}/img{}.jpg'.format(dest_dir, i))
+    filepath = os.path.join('./{}'.format(dest_dir), "index.html")
+    f = open(filepath, 'a')
+    for i in range(len(img_urls)):
+        f.write("<img src='img{}.jpg'>".format(i))
+    print('complete!')
+    
 
 
 def create_parser():
